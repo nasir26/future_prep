@@ -1,0 +1,95 @@
+# Vivado / Xsim artifacts
+*.jou
+*.log
+*.pb
+*.str
+*.wdb
+xsim.dir/
+.Xil/
+vivado_*.backup.*
+webtalk*/
+ip_user_files/
+*.xpr
+*.bit
+*.bin
+*.ltx
+*.mcs
+*.prm
+*.rpt
+*.dcp
+*.xdc
+*.xml
+*.html
+*.js
+*.css
+*.png
+*.svg
+impl_*/
+synth_*/
+.runs/
+.srcs/
+.cache/
+.hw/
+.ip_user_files/
+*.runs/
+*.gen/
+*.sim/
+*.ip_user_files/
+*.hbs/
+*.vds/
+*.veo/
+
+# Icarus / Verilator / cocotb build artifacts
+sim_build/
+results.xml
+*.vvp
+*.fst
+*.lxt
+*.lxt2
+dump.vcd
+
+# Waveform dumps go in waves/ but don't commit large ones
+waves/*.vcd
+waves/*.fst
+waves/*.lxt
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.so
+*.pyd
+.pytest_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+*.cover
+
+# Conda / venv
+.env
+env/
+venv/
+*.egg
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Editor
+.vscode/settings.json
+.idea/
+*.swp
+*~
+
+# Vendor repos (checked out separately)
+vendor/*/
+!vendor/.gitkeep
+
+# Misc
+*.DS_Store
+*.tar.gz
+*.zip
+/tmp/

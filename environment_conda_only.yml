@@ -1,0 +1,36 @@
+name: qprep
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+
+  # RTL simulators
+  - iverilog
+  - verilator
+  - gtkwave
+
+  # Scientific Python
+  - numpy
+  - scipy
+  - matplotlib
+  - ipython
+
+  # Quantum simulation
+  - qutip
+
+  # HDL generation
+  - amaranth
+
+  # Async / networking
+  - pyzmq
+  - grpcio
+  - grpcio-tools
+
+  # Dev tools
+  - pytest
+  - pytest-cov
+  - ruff
+  - pre-commit
+  - pyvcd

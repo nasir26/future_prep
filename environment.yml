@@ -1,0 +1,45 @@
+name: qprep
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  # Python runtime
+  - python=3.11
+  - pip
+
+  # RTL simulators
+  - iverilog          # Icarus Verilog — cocotb's preferred open sim
+  - verilator         # Fast C++ RTL simulation
+  - gtkwave           # Waveform viewer (headless fallback; primary: VS Code Surfer)
+
+  # Scientific Python
+  - numpy
+  - scipy
+  - matplotlib
+  - ipython
+
+  # Quantum simulation
+  - qutip             # QuTiP quantum toolbox — core of Module 06
+
+  # HDL generation (Migen lives on pip; Amaranth on conda-forge as 'amaranth')
+  - amaranth          # Amaranth HDL (was nMigen) — conda-forge package name
+
+  # Async / networking
+  - pyzmq             # ZeroMQ bindings — iontrap_emu server transport
+  - grpcio            # gRPC — alternative transport
+  - grpcio-tools      # protoc code generation
+
+  # Dev tools
+  - pytest
+  - pytest-cov
+  - ruff              # fast Python linter/formatter
+  - pre-commit
+
+  # pip-only packages (no conda-forge build)
+  - pip:
+    - cocotb           # Python-based RTL verification
+    - cocotb-bus       # reusable bus drivers/monitors
+    - migen            # Migen HDL (ARTIQ gateware language)
+    - qiskit           # OpenQASM 3 parsing + quantum circuits
+    - openqasm3        # OpenQASM 3 AST parser
+    - vcd              # pure-Python VCD reader (useful for waveform analysis)
