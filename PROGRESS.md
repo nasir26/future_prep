@@ -1,13 +1,13 @@
 # Progress Tracker
 
-Updated: 2026-06-10
+Updated: 2026-06-11
 
 ## Module Status
 
 | Module | Status | Completed | Notes |
 |--------|--------|-----------|-------|
 | M00 Toolchain bootstrap | ✅ Complete | 2026-06-10 | All 3 sims passing; VCDs in waves/ |
-| M01 SV + SVA | ⏳ Pending | — | |
+| M01 SV + SVA | 🔄 Active | — | Day 2 done: ex01–ex07 all PASS; Day 3–4 pending |
 | M02 cocotb | ⏳ Pending | — | |
 | M03 RFSoC RTL | ⏳ Pending | — | |
 | M04 ARTIQ kernels | ⏳ Pending | — | |
@@ -16,6 +16,18 @@ Updated: 2026-06-10
 | M07 Capstone | ⏳ Pending | — | |
 | M08 Infrastructure | ⏳ Pending | — | |
 | M09 UVM + VHDL | ⏳ Pending | — | |
+
+## M01 Checklist (Day 2 — SV basics ladder)
+
+- [x] ex01: D flip-flop — logic, always_ff, synchronous reset (iverilog, 9 PASS)
+- [x] ex02: Parameterized shift register — parameter, $clog2, generate (iverilog, 4 PASS)
+- [x] ex03: typedef / enum / packed struct — axi_beat_t (iverilog, 5 PASS)
+- [x] ex04: Two-always FSM — traffic light, Moore machine (iverilog, 28 PASS)
+- [x] ex05: Interface + modport — producer/consumer handshake (xsim, 3 PASS)
+- [x] ex06: Package — fifo_pkg types + function (xsim, 9 PASS)
+- [x] ex07: Parameterized sync FIFO — circular buffer, dual-pointer (xsim, 19 PASS)
+- [ ] Day 3: AXI4-Stream FIFO + SVA assertions (Wed 12 Jun)
+- [ ] Day 4: AXI4-Lite regfile + gate_fifo port (Thu 13 Jun)
 
 ## M00 Checklist
 
