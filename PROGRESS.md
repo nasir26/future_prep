@@ -1,6 +1,6 @@
 # Progress Tracker
 
-Updated: 2026-06-24
+Updated: 2026-06-24 (M03)
 
 ## Module Status
 
@@ -9,7 +9,7 @@ Updated: 2026-06-24
 | M00 Toolchain bootstrap | ✅ Complete | 2026-06-10 | All 3 sims passing; VCDs in waves/ |
 | M01 SV + SVA | ✅ Complete | 2026-06-24 | ex01–ex07 all PASS; DoC confirmed |
 | M02 cocotb | ✅ Complete | 2026-06-24 | 13/13 PASS: ex01(5) ex02(5) ex03(3) |
-| M03 RFSoC RTL | ⏳ Pending | — | |
+| M03 RFSoC RTL | ✅ Complete | 2026-06-24 | 18/18 PASS: ex01(5) DDS, ex02(4) envelope, ex03(5) sequencer, ex04(4) Rabi |
 | M04 ARTIQ kernels | ⏳ Pending | — | |
 | M05 Migen/Amaranth | ⏳ Pending | — | |
 | M06 iontrap_emu | ⏳ Pending | — | |
@@ -28,6 +28,22 @@ Updated: 2026-06-24
 - [x] ex07: Parameterized sync FIFO — circular buffer, dual-pointer (xsim, 19 PASS)
 - [x] Day 3: AXI4-Stream FIFO + SVA assertions
 - [x] Day 4: AXI4-Lite regfile + gate_fifo port
+
+## M03 Checklist (RFSoC RTL — iverilog + cocotb)
+
+- [x] ex01 dds_lut: 5 tests (reset, pinc_readback, phase_acc_step, iq_quadrature, spectral_purity) — 5/5 PASS
+- [x] ex02 pulse_envelope: 4 tests (square, gaussian, busy_clears, back_to_back) — 4/4 PASS
+- [x] ex03 timed_sequencer: 5 tests (wait, set_freq, fire, read_ctr, 5-instr program) — 5/5 PASS
+- [x] ex04 photon_counter: 4 tests (prng_noise, single_capture, threshold, rabi_sweep R²=0.99) — 4/4 PASS
+- [x] axil_bfm.py: reusable AXI4-Lite master BFM for all tests
+- [x] run_sim.py: LUT pre-generation + cocotb_tools.runner for all 4 targets
+- [x] README.md with 8-item DoC
+
+Key lessons:
+- Coherent sampling (integer cycles in FFT window) eliminates spectral leakage
+- AXI addr decode: use bit-field check (addr[8]) not constant compare for BRAM regions
+- prog_mem init to HALT opcode (0xF) so PC falling off end auto-terminates sequencer
+- Fibonacci LFSR: 16-bit polynomial x^16+x^15+x^13+x^4+1 is clean + maximal-length
 
 ## M02 Checklist (cocotb 2.0.1 + iverilog)
 
