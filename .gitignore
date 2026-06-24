@@ -93,3 +93,4 @@ vendor/*/
 *.tar.gz
 *.zip
 /tmp/
+test.vcd

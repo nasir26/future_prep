@@ -1,4 +1,4 @@
-// counter.v — 8-bit free-running counter, smoke-test DUT
+ // counter.v — 8-bit free-running counter, smoke-test DUT
 //
 // Purpose: the simplest possible RTL that still exercises the full simulation
 // flow: clock + reset, sequential logic, output observable in a waveform.
