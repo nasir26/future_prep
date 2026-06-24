@@ -71,3 +71,25 @@ future_prep/
 ├── PROGRESS.md          # live progress tracker
 └── README.md
 ```
+
+---
+
+## Citation
+
+If you use this work in your research, please cite:
+
+```bibtex
+@misc{nasirali_future_prep,
+  author    = {Nasir Ali},
+  title     = {future prep},
+  year      = {2026},
+  publisher = {GitHub},
+  url       = {https://github.com/nasir26/future_prep},
+  note      = {Centre for Development of Advanced Computing (C-DAC), Noida, India}
+}
+```
+
+## License
+
+This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.\
+© 2026 Nasir Ali, C-DAC Noida. All rights reserved.
