@@ -1,14 +1,14 @@
 # Progress Tracker
 
-Updated: 2026-06-11
+Updated: 2026-06-24
 
 ## Module Status
 
 | Module | Status | Completed | Notes |
 |--------|--------|-----------|-------|
 | M00 Toolchain bootstrap | ✅ Complete | 2026-06-10 | All 3 sims passing; VCDs in waves/ |
-| M01 SV + SVA | 🔄 Active | — | Day 2 done: ex01–ex07 all PASS; Day 3–4 pending |
-| M02 cocotb | ⏳ Pending | — | |
+| M01 SV + SVA | ✅ Complete | 2026-06-24 | ex01–ex07 all PASS; DoC confirmed |
+| M02 cocotb | ✅ Complete | 2026-06-24 | 13/13 PASS: ex01(5) ex02(5) ex03(3) |
 | M03 RFSoC RTL | ⏳ Pending | — | |
 | M04 ARTIQ kernels | ⏳ Pending | — | |
 | M05 Migen/Amaranth | ⏳ Pending | — | |
@@ -26,8 +26,23 @@ Updated: 2026-06-11
 - [x] ex05: Interface + modport — producer/consumer handshake (xsim, 3 PASS)
 - [x] ex06: Package — fifo_pkg types + function (xsim, 9 PASS)
 - [x] ex07: Parameterized sync FIFO — circular buffer, dual-pointer (xsim, 19 PASS)
-- [ ] Day 3: AXI4-Stream FIFO + SVA assertions (Wed 12 Jun)
-- [ ] Day 4: AXI4-Lite regfile + gate_fifo port (Thu 13 Jun)
+- [x] Day 3: AXI4-Stream FIFO + SVA assertions
+- [x] Day 4: AXI4-Lite regfile + gate_fifo port
+
+## M02 Checklist (cocotb 2.0.1 + iverilog)
+
+- [x] ex01 counter: 5 tests (reset, count_up, rollover, enable_gate, reset_while_running) — 5/5 PASS
+- [x] ex02 axis_fifo directed: 5 tests (single_beat, packet_roundtrip, fill_and_drain, back_to_back, sim_push_pop) — 5/5 PASS
+- [x] ex03 axis_fifo random: 3 tests (random_packets 50pkt/70% bp, flow_control, heavy_back_pressure 20% bp) — 3/3 PASS
+- [x] BFM (fifo_bfm.py): AxisSource, AxisSink, Scoreboard with correct handshake timing
+- [x] Coverage model: 4 packet-length bins, all hit in test_random_packets
+- [x] Wave dumps: m02_counter.fst, m02_axis_fifo.fst, m02_axis_rand.fst in waves/
+- [x] run_sim.py: cocotb_tools.runner wrapper for all three targets
+- [x] README.md with DoC checklist
+
+Key timing lesson: BFM handshake signals (tready, tvalid — combinational RTL outputs) must
+be sampled at RisingEdge (pre-delta), NOT at RisingEdge+Timer(1ps).  The Timer is only
+needed in test code to read registered outputs (fill_level, count) after an edge.
 
 ## M00 Checklist
 
