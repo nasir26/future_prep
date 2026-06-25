@@ -10,7 +10,7 @@ Updated: 2026-06-24 (M03)
 | M01 SV + SVA | ✅ Complete | 2026-06-24 | ex01–ex07 all PASS; DoC confirmed |
 | M02 cocotb | ✅ Complete | 2026-06-24 | 13/13 PASS: ex01(5) ex02(5) ex03(3) |
 | M03 RFSoC RTL | ✅ Complete | 2026-06-24 | 18/18 PASS: ex01(5) DDS, ex02(4) envelope, ex03(5) sequencer, ex04(4) Rabi |
-| M04 ARTIQ kernels | ⏳ Pending | — | |
+| M04 ARTIQ kernels | ✅ Complete | 2026-06-25 | 45 PASS 1 SKIP: ex01(6) TTL, ex02(4) photon, ex03(6) DDS, ex04(5) cooling, ex05(4) Rabi, ex06(5) Ramsey/DMA, ex07(4) SBC, ex08(4) MS, ex09(8) MCM+herald |
 | M05 Migen/Amaranth | ⏳ Pending | — | |
 | M06 iontrap_emu | ⏳ Pending | — | |
 | M07 Capstone | ⏳ Pending | — | |
@@ -28,6 +28,28 @@ Updated: 2026-06-24 (M03)
 - [x] ex07: Parameterized sync FIFO — circular buffer, dual-pointer (xsim, 19 PASS)
 - [x] Day 3: AXI4-Stream FIFO + SVA assertions
 - [x] Day 4: AXI4-Lite regfile + gate_fifo port
+
+## M04 Checklist (ARTIQ kernels — artiq_sim + pytest)
+
+- [x] artiq_sim/core.py: Core device, timeline cursor, mu conversion, RTIOUnderflow
+- [x] artiq_sim/devices.py: TTLOut, TTLIn (Poisson counts), AD9910 FTW/POW/ASF, CoreDMA
+- [x] artiq_sim/environment.py: EnvExperiment, HasEnvironment, make_experiment()
+- [x] ex01 TTL basics: break_realtime, delay, at_mu, burst, underflow demo (6 tests)
+- [x] ex02 Photon counting: gate_rising_mu, count, histogram, discrimination fidelity (4 tests)
+- [x] ex03 DDS: set, set_mu, phase, RF switch, freq ramp (6 tests)
+- [x] ex04 Doppler cooling: cool_and_pump(), detect() subroutines (5 tests)
+- [x] ex05 Rabi scan: P=sin²(π f_Rabi τ) [NOT sin²(πτ/τ_π)], scipy fit, τ_π ±30% (4 tests)
+- [x] ex06 Ramsey: phase scan, CoreDMA trace recording/playback, contrast fit (5 tests)
+- [x] ex07 Sideband cooling: r^N model, sideband asymmetry n̄ extraction (3+1skip)
+- [x] ex08 MS gate: bichromatic pulse, N_MODCYCLES, fidelity=1−2η²(n̄+½) (4 tests)
+- [x] ex09 Mid-circuit + heralded: MCM+conditional X; geometric herald loop (8 tests)
+
+Key lessons:
+- ARTIQ is Nix-only; artiq_sim matches the real API 1:1 for portable kernel code
+- Rabi formula: P = sin²(π × f_Rabi × τ) — at τ_π = 1/(2f_Rabi), P=1 NOT 0
+- Underflow demo: go back >SLACK_MU (2ms), not exactly =SLACK_MU (1ms = boundary, no raise)
+- SBC asymmetry: n̄/(n̄+1) ratio unmeasurable with 30 shots when n̄ < 0.1 (Poisson noise)
+- CoreDMA: record once, playback N times — key for tight shot loops
 
 ## M03 Checklist (RFSoC RTL — iverilog + cocotb)
 
