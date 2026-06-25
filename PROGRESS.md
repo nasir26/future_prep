@@ -1,6 +1,6 @@
 # Progress Tracker
 
-Updated: 2026-06-24 (M03)
+Updated: 2026-06-25 (M05)
 
 ## Module Status
 
@@ -11,7 +11,7 @@ Updated: 2026-06-24 (M03)
 | M02 cocotb | ✅ Complete | 2026-06-24 | 13/13 PASS: ex01(5) ex02(5) ex03(3) |
 | M03 RFSoC RTL | ✅ Complete | 2026-06-24 | 18/18 PASS: ex01(5) DDS, ex02(4) envelope, ex03(5) sequencer, ex04(4) Rabi |
 | M04 ARTIQ kernels | ✅ Complete | 2026-06-25 | 45 PASS 1 SKIP: ex01(6) TTL, ex02(4) photon, ex03(6) DDS, ex04(5) cooling, ex05(4) Rabi, ex06(5) Ramsey/DMA, ex07(4) SBC, ex08(4) MS, ex09(8) MCM+herald |
-| M05 Migen/Amaranth | ⏳ Pending | — | |
+| M05 Migen/Amaranth | ✅ Complete | 2026-06-25 | 32/32 PASS: Migen(13) Counter/FSM/FIFO, Amaranth(19) Counter/FSM/FIFO/DDS + Verilog export |
 | M06 iontrap_emu | ⏳ Pending | — | |
 | M07 Capstone | ⏳ Pending | — | |
 | M08 Infrastructure | ⏳ Pending | — | |
