@@ -19,6 +19,7 @@ module tb_ex05_interface;
     always #5 clk = ~clk;
 
     int pass_count = 0, fail_count = 0;
+    string _vcd;
 
     task check8(string name, logic [7:0] got, logic [7:0] exp);
         if (got === exp) begin
@@ -45,7 +46,8 @@ module tb_ex05_interface;
     endtask
 
     initial begin
-        $dumpfile("../../../waves/m01_ex05_interface.vcd");
+        if (!$value$plusargs("DUMPFILE=%s", _vcd)) _vcd = "dump.vcd";
+        $dumpfile(_vcd);
         $dumpvars(0, tb_ex05_interface);
 
         rst = 1; start = 0;

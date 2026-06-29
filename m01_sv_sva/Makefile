@@ -16,6 +16,7 @@
 #   source ~/future_prep/scripts/activate_qprep.sh
 
 WAVES_DIR := ../waves
+WAVES_ABS := $(abspath $(WAVES_DIR))
 BUILD_DIR := build
 RTL_DIR   := rtl
 TB_DIR    := tb
@@ -45,14 +46,16 @@ define IVERILOG_RUN
 endef
 
 # ─── xsim helper ─────────────────────────────────────────────────────────────
-# Usage: $(call XSIM_RUN, exercise_name, snap_name, rtl_files, tb_file)
+# Usage: $(call XSIM_RUN, exercise_name, snap_name, rtl_files, tb_file, vcd_basename)
+# The absolute VCD path is passed as a plusarg so each TB writes to the repo-root
+# waves/ directory regardless of which build subdirectory xsim cd's into.
 define XSIM_RUN
 	@echo "--- [xsim] $1 ---"
 	@mkdir -p $(BUILD_DIR)/xsim_$1
 	cd $(BUILD_DIR)/xsim_$1 && \
 	  xvlog --sv $(addprefix ../../,$3) $(addprefix ../../,$4) 2>&1 | grep -vE "^$$|^Vivado" ; \
 	  xelab $2 -s $2_snap 2>&1 | grep -E "ERROR|Built|WARNING" ; \
-	  xsim $2_snap --runall 2>&1 | grep -E "PASS|FAIL|ALL|ERROR|Info:|finish"
+	  xsim $2_snap --testplusarg 'DUMPFILE=$(WAVES_ABS)/$(strip $5)' --runall 2>&1 | grep -E "PASS|FAIL|ALL|ERROR|Info:|finish"
 	@echo ""
 endef
 
@@ -76,19 +79,22 @@ ex04: check_dirs
 ex05: check_dirs
 	$(call XSIM_RUN,ex05,tb_ex05_interface,\
 	  $(RTL_DIR)/ex05_interface.sv,\
-	  $(TB_DIR)/tb_ex05_interface.sv)
+	  $(TB_DIR)/tb_ex05_interface.sv,\
+	  m01_ex05_interface.vcd)
 
 # ─── Ex06: Package (xsim) ────────────────────────────────────────────────────
 ex06: check_dirs
 	$(call XSIM_RUN,ex06,tb_ex06_pkg,\
 	  $(RTL_DIR)/ex06_pkg.sv $(RTL_DIR)/ex06_top.sv,\
-	  $(TB_DIR)/tb_ex06_pkg.sv)
+	  $(TB_DIR)/tb_ex06_pkg.sv,\
+	  m01_ex06_pkg.vcd)
 
 # ─── Ex07: Synchronous FIFO (xsim) ───────────────────────────────────────────
 ex07: check_dirs
 	$(call XSIM_RUN,ex07,tb_ex07_sync_fifo,\
 	  $(RTL_DIR)/ex07_sync_fifo.sv,\
-	  $(TB_DIR)/tb_ex07_sync_fifo.sv)
+	  $(TB_DIR)/tb_ex07_sync_fifo.sv,\
+	  m01_ex07_sync_fifo.vcd)
 
 # ─── Day 3: AXI4-Stream FIFO + SVA (xsim — concurrent assertions need xsim) ───
 # Compiles the DUT, the bound SVA checker, and the self-checking TB together.
@@ -97,7 +103,8 @@ ex07: check_dirs
 axi_stream: check_dirs
 	$(call XSIM_RUN,axi_stream,tb_axi_stream_fifo,\
 	  $(RTL_DIR)/axi_stream_fifo.sv $(RTL_DIR)/sva_fifo_props.sv,\
-	  $(TB_DIR)/tb_axi_stream_fifo.sv)
+	  $(TB_DIR)/tb_axi_stream_fifo.sv,\
+	  m01_axi_stream_fifo.vcd)
 
 # ─── Clean ───────────────────────────────────────────────────────────────────
 clean:

@@ -23,6 +23,7 @@ module tb_ex06_pkg;
     always #5 clk = ~clk;
 
     int pass_count = 0, fail_count = 0;
+    string _vcd;
 
     task check(string name, logic got, logic exp);
         if (got === exp) begin
@@ -49,7 +50,8 @@ module tb_ex06_pkg;
     endtask
 
     initial begin
-        $dumpfile("../../../waves/m01_ex06_pkg.vcd");
+        if (!$value$plusargs("DUMPFILE=%s", _vcd)) _vcd = "dump.vcd";
+        $dumpfile(_vcd);
         $dumpvars(0, tb_ex06_pkg);
 
         rst = 1; push = 0; pop = 0; din = '0; idx_in = 0;

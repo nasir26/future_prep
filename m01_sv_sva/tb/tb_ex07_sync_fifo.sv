@@ -21,6 +21,7 @@ module tb_ex07_sync_fifo;
     always #5 clk = ~clk;
 
     int pass_count = 0, fail_count = 0;
+    string _vcd;
 
     task check(string name, logic got, logic exp);
         if (got === exp) begin
@@ -73,7 +74,8 @@ module tb_ex07_sync_fifo;
     endtask
 
     initial begin
-        $dumpfile("../../../waves/m01_ex07_sync_fifo.vcd");
+        if (!$value$plusargs("DUMPFILE=%s", _vcd)) _vcd = "dump.vcd";
+        $dumpfile(_vcd);
         $dumpvars(0, tb_ex07_sync_fifo);
 
         // ── Reset ───────────────────────────────────────────────────────────

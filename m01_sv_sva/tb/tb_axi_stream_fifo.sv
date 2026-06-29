@@ -40,6 +40,7 @@ module tb_axi_stream_fifo;
     // ── Scoreboard + counters ────────────────────────────────────────────────
     logic [DATA_W:0] model [$];    // reference FIFO of {tlast, tdata}
     int pass_count = 0, fail_count = 0;
+    string _vcd;
 
     task automatic check(string name, logic cond);
         if (cond) begin pass_count++; $display("  PASS  %s", name); end
@@ -163,7 +164,8 @@ module tb_axi_stream_fifo;
 
     // ── Run ────────────────────────────────────────────────────────────────────
     initial begin
-        $dumpfile("../../waves/m01_axi_stream_fifo.vcd");
+        if (!$value$plusargs("DUMPFILE=%s", _vcd)) _vcd = "dump.vcd";
+        $dumpfile(_vcd);
         $dumpvars(0, tb_axi_stream_fifo);
 
         do_reset();
