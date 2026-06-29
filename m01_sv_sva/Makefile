@@ -20,10 +20,10 @@ BUILD_DIR := build
 RTL_DIR   := rtl
 TB_DIR    := tb
 
-.PHONY: all ex01 ex02 ex03 ex04 ex05 ex06 ex07 clean check_dirs
+.PHONY: all ex01 ex02 ex03 ex04 ex05 ex06 ex07 axi_stream clean check_dirs
 
 # ─── Top-level ────────────────────────────────────────────────────────────────
-all: check_dirs ex01 ex02 ex03 ex04 ex05 ex06 ex07
+all: check_dirs ex01 ex02 ex03 ex04 ex05 ex06 ex07 axi_stream
 	@echo ""
 	@echo "============================================"
 	@echo " M01 ALL EXERCISES COMPLETE"
@@ -89,6 +89,15 @@ ex07: check_dirs
 	$(call XSIM_RUN,ex07,tb_ex07_sync_fifo,\
 	  $(RTL_DIR)/ex07_sync_fifo.sv,\
 	  $(TB_DIR)/tb_ex07_sync_fifo.sv)
+
+# ─── Day 3: AXI4-Stream FIFO + SVA (xsim — concurrent assertions need xsim) ───
+# Compiles the DUT, the bound SVA checker, and the self-checking TB together.
+# The `bind` in sva_fifo_props.sv injects the checker into the FIFO instance,
+# so the assertions run automatically during the directed + randomized tests.
+axi_stream: check_dirs
+	$(call XSIM_RUN,axi_stream,tb_axi_stream_fifo,\
+	  $(RTL_DIR)/axi_stream_fifo.sv $(RTL_DIR)/sva_fifo_props.sv,\
+	  $(TB_DIR)/tb_axi_stream_fifo.sv)
 
 # ─── Clean ───────────────────────────────────────────────────────────────────
 clean:
