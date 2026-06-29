@@ -1,6 +1,6 @@
 # Progress Tracker
 
-Updated: 2026-06-25 (M06)
+Updated: 2026-06-29 (M07)
 
 ## Module Status
 
@@ -13,9 +13,30 @@ Updated: 2026-06-25 (M06)
 | M04 ARTIQ kernels | ✅ Complete | 2026-06-25 | 45 PASS 1 SKIP: ex01(6) TTL, ex02(4) photon, ex03(6) DDS, ex04(5) cooling, ex05(4) Rabi, ex06(5) Ramsey/DMA, ex07(4) SBC, ex08(4) MS, ex09(8) MCM+herald |
 | M05 Migen/Amaranth | ✅ Complete | 2026-06-25 | 32/32 PASS: Migen(13) Counter/FSM/FIFO, Amaranth(19) Counter/FSM/FIFO/DDS + Verilog export |
 | M06 iontrap_emu | ✅ Complete | 2026-06-25 | 61/61 PASS: single-ion(10) cooling(8) readout(13) noise(16) ms_gate(7) server(7) |
-| M07 Capstone | ⏳ Pending | — | |
+| M07 Capstone | ✅ Complete | 2026-06-29 | 34/34 PASS: backend(6) compiler(7) scheduler(6) calibration(7) distributed(8) |
 | M08 Infrastructure | ⏳ Pending | — | |
 | M09 UVM + VHDL | ⏳ Pending | — | |
+
+## M07 Checklist (Capstone — full-stack quantum control)
+
+- [x] backend.py: QPUBackend wrapping M06 IonTrap + FluorescenceReadout + MS gate (6 tests)
+- [x] compiler.py: QASM3 regex parser — h/x/rz/cx/measure → CarrierPulse/VirtualZ/EntangleGate/MeasureOp (7 tests)
+- [x] scheduler.py: asyncio ExperimentScheduler — submit/priority/run_all (6 tests)
+- [x] calibration.py: ParamStore + freq_scan/rabi_pi_time/ramsey_track/recal_daemon (7 tests)
+- [x] node.py: QPUNode — local ops + heralded entanglement via photonic link (8 tests)
+- [x] circuits/bell.qasm: H + CX + measure → Bell state
+- [x] circuits/rabi.qasm: X + measure → π-pulse demo
+- [x] run_qasm3.py: CLI — QASM3 → compile → execute → ASCII bar chart
+- [x] README.md with 7-item DoC
+
+Key lessons:
+- Virtual Z (rz) is zero-cost on trapped-ion hardware: DDS phase offset, no pulse
+- t_pulse = θ / Ω_R — rotation angle → physical duration via Rabi frequency
+- MS gate fidelity: F = 1 − 2η²(n̄ + ½) — two noise sources: thermal + Lamb-Dicke
+- Ramsey ×N more sensitive than Rabi for same total interrogation time T
+- Herald rate ∝ η²: doubling collection efficiency → 4× faster entanglement rate
+- asyncio.sleep(0) inside calibration coroutines yields to event loop without delay
+- Bell circuit: 5 compiled instructions (not 6 — header/declaration lines are skipped)
 
 ## M01 Checklist (Day 2 — SV basics ladder)
 
