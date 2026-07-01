@@ -39,7 +39,7 @@ module tb_ex01_dff;
 
     // ── Test sequence ────────────────────────────────────────────────────────
     initial begin
-        $dumpfile("../../waves/m01_ex01_dff.vcd");
+        $dumpfile("../waves/m01_ex01_dff.vcd");
         $dumpvars(0, tb_ex01_dff);
 
         rst = 1; en = 0; d = 8'hAB;

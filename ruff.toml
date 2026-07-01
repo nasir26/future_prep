@@ -1,0 +1,20 @@
+# M08 — ruff config. Repo-root so `ruff check .` picks it up for both the
+# local pre-commit hook and CI (.github/workflows/ci.yml).
+target-version = "py311"
+extend-exclude = ["vendor"]
+
+[lint.per-file-ignores]
+# `from migen import *` / `from amaranth.hdl import *` is the idiomatic way
+# to pull in these HDL DSLs (Signal, Module, etc.) — not an accidental
+# wildcard import.
+"m05_migen_amaranth/rtl/*.py" = ["F403", "F405"]
+
+# M04-M07 predate this lint gate (all DoC-confirmed, tests green) and carry
+# routine unused-import/style debt from iterative development across a
+# 3-week build. Waived here rather than mass-edited during an infra-only
+# module — see m08_infra/README.md for the rationale. m00-m03, m08_infra,
+# and m09+ stay on the full default ruleset.
+"m04_artiq/**/*.py" = ["F401", "E401", "E402", "E701", "E702", "E741", "F811", "F841"]
+"m05_migen_amaranth/**/*.py" = ["F401", "E401", "E402", "E701", "E702", "E741", "F811", "F841"]
+"m06_iontrap_emu/**/*.py" = ["F401", "E401", "E402", "E701", "E702", "E741", "F811", "F841"]
+"m07_capstone/**/*.py" = ["F401", "E401", "E402", "E701", "E702", "E741", "F811", "F841"]

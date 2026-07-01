@@ -24,15 +24,15 @@ Source Vivado for any session: `source ~/future_prep/scripts/setup_vivado.sh`
 
 ## Modules — Progress Checklist
 
-- [ ] **M00** Toolchain bootstrap — smoke test counter in iverilog + xsim + Verilator, VCD → Surfer
-- [ ] **M01** SystemVerilog + SVA — AXI4-Stream FIFO + AXI4-Lite regfile with SVA assertions
-- [ ] **M02** cocotb verification — Python testbenches + coverage against M01 blocks + RTL engine
-- [ ] **M03** RFSoC pulse gateware emulation — DDS, envelope engine, timed sequencer, Rabi in RTL
-- [ ] **M04** ARTIQ kernel mastery — full kernel ladder, dummy/sim backend, QuTiP-backed scans
-- [ ] **M05** Migen/Amaranth literacy — DDS in Amaranth, elaborate → sim, read ARTIQ gateware
-- [ ] **M06** Ion-trap physics emulator (QuTiP) — `iontrap_emu/` asyncio server
-- [ ] **M07** CAPSTONE — QASM3 → compiler → sequencer → physics → fitted results
-- [ ] **M08** Infrastructure — Docker, GitHub Actions CI, pre-commit, green from fresh clone
+- [x] **M00** Toolchain bootstrap — smoke test counter in iverilog + xsim + Verilator, VCD → Surfer
+- [x] **M01** SystemVerilog + SVA — AXI4-Stream FIFO + AXI4-Lite regfile with SVA assertions
+- [x] **M02** cocotb verification — Python testbenches + coverage against M01 blocks + RTL engine
+- [x] **M03** RFSoC pulse gateware emulation — DDS, envelope engine, timed sequencer, Rabi in RTL
+- [x] **M04** ARTIQ kernel mastery — full kernel ladder, dummy/sim backend, QuTiP-backed scans
+- [x] **M05** Migen/Amaranth literacy — DDS in Amaranth, elaborate → sim, read ARTIQ gateware
+- [x] **M06** Ion-trap physics emulator (QuTiP) — `iontrap_emu/` asyncio server
+- [x] **M07** CAPSTONE — QASM3 → compiler → sequencer → physics → fitted results
+- [x] **M08** Infrastructure — Docker, GitHub Actions CI, pre-commit, green from fresh clone
 - [ ] **M09** UVM + VHDL literacy — toy UVM TB, mixed-language xsim
 
 ## Quick-start

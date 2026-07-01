@@ -36,7 +36,7 @@ module tb_ex02_shift_reg;
     endtask
 
     initial begin
-        $dumpfile("../../waves/m01_ex02_shift_reg.vcd");
+        $dumpfile("../waves/m01_ex02_shift_reg.vcd");
         $dumpvars(0, tb_ex02_shift_reg);
 
         rst = 1; en = 0; d_in = '0;

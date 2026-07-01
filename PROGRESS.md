@@ -1,6 +1,6 @@
 # Progress Tracker
 
-Updated: 2026-06-29 (M07)
+Updated: 2026-07-01 (M08)
 
 ## Module Status
 
@@ -14,8 +14,26 @@ Updated: 2026-06-29 (M07)
 | M05 Migen/Amaranth | ✅ Complete | 2026-06-25 | 32/32 PASS: Migen(13) Counter/FSM/FIFO, Amaranth(19) Counter/FSM/FIFO/DDS + Verilog export |
 | M06 iontrap_emu | ✅ Complete | 2026-06-25 | 61/61 PASS: single-ion(10) cooling(8) readout(13) noise(16) ms_gate(7) server(7) |
 | M07 Capstone | ✅ Complete | 2026-06-29 | 34/34 PASS: backend(6) compiler(7) scheduler(6) calibration(7) distributed(8) |
-| M08 Infrastructure | ⏳ Pending | — | |
+| M08 Infrastructure | ✅ Complete | 2026-07-01 | Docker image + compose demo + GH Actions CI (`act`-verified green) + pre-commit |
 | M09 UVM + VHDL | ⏳ Pending | — | |
+
+## M08 Checklist (Infrastructure — Docker, CI, pre-commit)
+
+- [x] Dockerfile: open-source qprep image (`condaforge/miniforge3` + `environment.yml`), Vivado/xsim deliberately excluded (proprietary/licensed)
+- [x] docker-compose.yml: `iontrap-server` (M06 asyncio TCP/JSON server) + `client` (demo_client.py) — real two-container network demo
+- [x] .github/workflows/ci.yml: ruff + verible-verilog-lint + M01(ex01-04)/M02/M03/M04/M05/M06/M07 — one job, `conda-incubator/setup-miniconda` from the same `environment.yml`
+- [x] .pre-commit-config.yaml + ruff.toml + .rules.verible_lint at repo root (tool-discovery constraints force this; documented in m08_infra/README.md)
+- [x] `act push -W .github/workflows/ci.yml` runs the whole pipeline green locally
+- [x] `make demo` → two-container compose run prints real `rabi_scan`/`ms_gate` results over the network
+- [x] README.md with 8-item DoC
+
+Key lessons:
+- Adding real CI immediately surfaced two pre-existing bugs invisible on this workstation:
+  1. M01's ex01-04 testbenches hardcoded `$dumpfile("../../waves/...")` — one directory too far up. It "worked" locally only because a stray `~/waves/` directory (outside the repo) had been silently absorbing VCDs since 2026-06-11. Fixed to `../waves/` to match the Makefile's `WAVES_DIR` and the repo's actual convention.
+  2. `amaranth-yosys` (needed for M05's `.convert()` Verilog-export tests) was pip-installed locally but never added to `environment.yml` — undeclared environment drift. Added to the pip section.
+- `docker run` doesn't source a login shell, so `conda activate` no-ops across Docker layers — use `mamba run -n qprep` instead (both `SHELL` and `ENTRYPOINT` in the Dockerfile do this).
+- M07's `QPUNode.connect()` links two peers in-process (`self._peer = other`) — no network protocol exists to run it across containers. M06's `iontrap.server` (asyncio TCP/JSON) is the one real network service in the repo, so it's what the compose demo actually runs.
+- Introducing a repo-wide linter after 7 modules already exist means choosing: retrofit everything, or scope the gate. Waived `ruff`/`verible` rules narrowly per-module (documented in `ruff.toml`/`.rules.verible_lint`) rather than editing already-complete, DoC-confirmed RTL/Python; fixed the two genuinely trivial one-line lint issues (M02/M03) directly since risk was zero.
 
 ## M07 Checklist (Capstone — full-stack quantum control)
 

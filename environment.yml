@@ -34,6 +34,8 @@ dependencies:
   - pytest-cov
   - ruff              # fast Python linter/formatter
   - pre-commit
+  - verible           # verible-verilog-lint — SV/Verilog static lint (Module 08)
+  - act               # run GitHub Actions workflows locally (Module 08)
 
   # pip-only packages (no conda-forge build)
   - pip:
@@ -43,3 +45,6 @@ dependencies:
     - qiskit           # OpenQASM 3 parsing + quantum circuits
     - openqasm3        # OpenQASM 3 AST parser
     - vcd              # pure-Python VCD reader (useful for waveform analysis)
+    - amaranth-yosys   # WASM Yosys build — Amaranth's `.convert()` needs a
+                       # Yosys binary for Verilog export (M05 ex02/ex04/ex05);
+                       # conda-forge has no yosys build for this platform.

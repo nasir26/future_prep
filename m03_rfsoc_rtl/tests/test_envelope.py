@@ -19,7 +19,6 @@ Author: Nasir Ali, C-DAC Noida
 
 import logging
 import math
-import numpy as np
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import RisingEdge, ClockCycles, Timer

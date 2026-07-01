@@ -54,7 +54,7 @@ module tb_ex03_typedef_enum;
     endtask
 
     initial begin
-        $dumpfile("../../waves/m01_ex03_typedef.vcd");
+        $dumpfile("../waves/m01_ex03_typedef.vcd");
         $dumpvars(0, tb_ex03_typedef_enum);
 
         rst = 1; color_in = RED; beat_in = '0;

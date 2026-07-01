@@ -1,0 +1,40 @@
+# M08 — capstone services demo.
+#
+# Two containers built from the same image (../Dockerfile, open-source
+# toolchain only — see its header comment for why xsim isn't in here):
+#   iontrap-server — M06's asyncio TCP/JSON physics server (iontrap.server),
+#                    bound to 0.0.0.0 so the client container can reach it
+#                    by service name over the compose network.
+#   client         — demo_client.py, issues rabi_scan + ms_gate requests
+#                    against iontrap-server and prints the results.
+#
+# Run: cd m08_infra && docker compose up --build --abort-on-container-exit
+
+services:
+  iontrap-server:
+    build:
+      context: ..
+      dockerfile: m08_infra/Dockerfile
+    working_dir: /workspace/m06_iontrap_emu
+    command: >
+      python -c "import asyncio; from iontrap.server import run_server;
+      asyncio.run(run_server(host='0.0.0.0'))"
+    ports:
+      - "7777:7777"
+    networks:
+      - qcore-net
+
+  client:
+    build:
+      context: ..
+      dockerfile: m08_infra/Dockerfile
+    working_dir: /workspace/m08_infra
+    command: python demo_client.py --host iontrap-server --port 7777
+    depends_on:
+      - iontrap-server
+    networks:
+      - qcore-net
+
+networks:
+  qcore-net:
+    driver: bridge

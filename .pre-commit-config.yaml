@@ -1,0 +1,34 @@
+# Repo-root pre-commit config (M08). pre-commit reads this path only from
+# the git root, so it lives here rather than under m08_infra/ like the rest
+# of Module 08's files — see m08_infra/README.md for why.
+#
+# Run `pre-commit install` once (inside `source scripts/activate_qprep.sh`,
+# so ruff/verible-verilog-lint are on PATH) to wire these into `git commit`.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=2048"]
+      - id: check-merge-conflict
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.16
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  # `language: system` because verible is a conda-forge binary (qprep env),
+  # not something pre-commit can vendor for us like the hooks above.
+  - repo: local
+    hooks:
+      - id: verible-verilog-lint
+        name: verible-verilog-lint (SystemVerilog/Verilog)
+        entry: verible-verilog-lint --rules_config_search
+        language: system
+        files: \.(v|sv|svh)$
+        exclude: ^vendor/

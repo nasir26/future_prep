@@ -46,7 +46,7 @@ module tb_ex04_fsm;
     endtask
 
     initial begin
-        $dumpfile("../../waves/m01_ex04_fsm.vcd");
+        $dumpfile("../waves/m01_ex04_fsm.vcd");
         $dumpvars(0, tb_ex04_fsm);
 
         rst = 1;

@@ -1,0 +1,30 @@
+# verible-verilog-lint rule config for future_prep.
+# Auto-discovered via --rules_config_search (searches upward from each file).
+#
+# Rules below are disabled because they conflict with conventions already
+# baked into M00-M07 (DoC-confirmed, tests passing) rather than because the
+# style itself is wrong. Re-enabling any of these means retrofitting every
+# earlier module's file names/RTL, which M08 (infra-only) intentionally does
+# not do. New modules (M09+) are free to follow the stricter default ruleset.
+
+# ex06_pkg.sv declares `fifo_pkg`, sva_fifo_props.sv is a bind file, etc. —
+# this repo names files after their role in the exercise ladder, not 1:1
+# after the module/package they declare.
+-package-filename
+-module-filename
+
+# Educational/exercise code favors readable non-automatic tasks and
+# parameters without explicit storage-type annotations; not a bug class.
+-explicit-task-lifetime
+-explicit-parameter-storage-type
+-parameter-name-style
+-unpacked-dimensions-range-ordering
+
+# 100-col soft limit; a handful of pre-M08 lines run 1-4 chars over it.
+-line-length
+
+# timed_sequencer.sv's `case (state)` is driven by a 2-bit enum with all
+# 4 values assigned (S_IDLE/S_FETCH/S_EXEC/S_WAIT) — already exhaustive.
+# Flagged here because M03 is complete/tested (18/18 PASS); adding a dead
+# default arm to already-verified RTL is out of scope for an infra task.
+-case-missing-default

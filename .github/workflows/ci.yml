@@ -1,0 +1,58 @@
+# M08 — CI. GitHub Actions only reads workflows from .github/workflows/ at
+# the repo root, so this can't live under m08_infra/ — see its README for
+# the full explanation of why several M08 files sit outside the module dir.
+#
+# Scope: open-source toolchain only (iverilog + cocotb + pytest + ruff +
+# verible-verilog-lint). Vivado/xsim needs a license this runner doesn't
+# have, so M01's ex05-ex07/axi_stream and all of M09 stay workstation-only;
+# everything else here matches `source scripts/activate_qprep.sh` 1:1
+# because both read environment.yml.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          environment-file: environment.yml
+          activate-environment: qprep
+          miniforge-version: latest
+
+      - name: ruff (Python lint)
+        run: ruff check .
+
+      - name: verible-verilog-lint (SystemVerilog/Verilog)
+        run: |
+          find m00_toolchain m01_sv_sva m02_cocotb m03_rfsoc_rtl m05_migen_amaranth \
+               -name '*.sv' -o -name '*.v' | xargs verible-verilog-lint --rules_config_search
+
+      - name: M01 — SV basics (iverilog-only exercises)
+        run: cd m01_sv_sva && make ex01 ex02 ex03 ex04
+
+      - name: M02 — cocotb (Icarus)
+        run: cd m02_cocotb && make all
+
+      - name: M03 — RFSoC gateware (cocotb + Icarus)
+        run: cd m03_rfsoc_rtl && make all
+
+      - name: M04 — ARTIQ kernels (pytest)
+        run: cd m04_artiq && make test
+
+      - name: M05 — Migen/Amaranth (pytest + Verilog export)
+        run: cd m05_migen_amaranth && make test
+
+      - name: M06 — iontrap_emu (pytest)
+        run: cd m06_iontrap_emu && make test
+
+      - name: M07 — Capstone (pytest)
+        run: cd m07_capstone && make test

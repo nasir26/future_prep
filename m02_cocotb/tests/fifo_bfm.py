@@ -167,5 +167,5 @@ class Scoreboard:
         assert self._errors   == 0, f"{self._errors} scoreboard mismatch(es)"
         assert remaining      == 0, (
             f"{remaining} expected beat(s) never received: "
-            + ", ".join(f"(0x{d:02X},{l})" for d, l in self._expected)
+            + ", ".join(f"(0x{d:02X},{tlast})" for d, tlast in self._expected)
         )
