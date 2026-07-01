@@ -102,7 +102,8 @@ source ~/future_prep/scripts/activate_qprep.sh
 make smoke
 ```
 
-Expected output: 7 PASS lines per simulator (21 total), 3 VCD files in `../waves/`.
+Expected output: 8 per-test `PASS` lines + 1 `ALL TESTS PASSED` summary line per
+simulator (9 lines × 3 simulators = 27 total), 3 VCD files in `../waves/`.
 
 ---
 

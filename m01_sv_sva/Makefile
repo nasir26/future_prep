@@ -4,8 +4,10 @@
 #   cd ~/future_prep/m01_sv_sva && make all
 #
 # Targets:
-#   make all         — run all ex01–ex07 exercises
+#   make all         — run all ex01–ex07 exercises + axi_stream + axi_lite
 #   make ex01 .. ex07 — individual exercises
+#   make axi_stream  — Day 3: AXI4-Stream FIFO + SVA
+#   make axi_lite    — Day 4: AXI4-Lite regfile + gate_fifo_sv + SVA
 #   make clean       — remove build artifacts and VCDs
 #
 # Simulator choice:
@@ -21,10 +23,10 @@ BUILD_DIR := build
 RTL_DIR   := rtl
 TB_DIR    := tb
 
-.PHONY: all ex01 ex02 ex03 ex04 ex05 ex06 ex07 axi_stream clean check_dirs
+.PHONY: all ex01 ex02 ex03 ex04 ex05 ex06 ex07 axi_stream axi_lite clean check_dirs
 
 # ─── Top-level ────────────────────────────────────────────────────────────────
-all: check_dirs ex01 ex02 ex03 ex04 ex05 ex06 ex07 axi_stream
+all: check_dirs ex01 ex02 ex03 ex04 ex05 ex06 ex07 axi_stream axi_lite
 	@echo ""
 	@echo "============================================"
 	@echo " M01 ALL EXERCISES COMPLETE"
@@ -105,6 +107,16 @@ axi_stream: check_dirs
 	  $(RTL_DIR)/axi_stream_fifo.sv $(RTL_DIR)/sva_fifo_props.sv,\
 	  $(TB_DIR)/tb_axi_stream_fifo.sv,\
 	  m01_axi_stream_fifo.vcd)
+
+# ─── Day 4: AXI4-Lite regfile + gate_fifo_sv + SVA (xsim) ────────────────────
+# One TB drives both DUTs together: axi_lite_regfile's REG0 bit 0 is wired to
+# gate_fifo_sv's gate_en, so the interesting behavior (AXI-Lite write ->
+# datapath FIFO unblocks) is one integration test, not two isolated ones.
+axi_lite: check_dirs
+	$(call XSIM_RUN,axi_lite,tb_axi_lite_regfile,\
+	  $(RTL_DIR)/axi_lite_regfile.sv $(RTL_DIR)/gate_fifo_sv.sv $(RTL_DIR)/sva_gate_fifo_props.sv,\
+	  $(TB_DIR)/tb_axi_lite_regfile.sv,\
+	  m01_axi_lite_regfile.vcd)
 
 # ─── Clean ───────────────────────────────────────────────────────────────────
 clean:

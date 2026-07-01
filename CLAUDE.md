@@ -30,7 +30,7 @@ future_prep/
 ├── waves/             ← ALL VCD dumps go here (every module)
 ├── vendor/            ← cloned repos (QICK, ARTIQ) go here
 ├── m00_toolchain/     ← COMPLETE
-├── m01_sv_sva/        ← active (Day 2–4)
+├── m01_sv_sva/        ← COMPLETE
 ├── m02_cocotb/
 ├── m03_rfsoc_rtl/
 ├── m04_artiq/
@@ -72,18 +72,21 @@ This activates the `qprep` conda env (Python 3.11, iverilog 12.0, Verilator 5.04
 
 ## Module status quick-ref
 
+(Kept in sync with PROGRESS.md, the source of truth — check there for
+per-module test counts and lessons learned.)
+
 | Module | Status |
 |--------|--------|
 | M00 Toolchain bootstrap | ✅ Complete (2026-06-10) |
-| M01 SV + SVA | 🔄 Active |
-| M02 cocotb | ⏳ Pending |
-| M03 RFSoC RTL | ⏳ Pending |
-| M04 ARTIQ kernels | ⏳ Pending |
-| M05 Migen/Amaranth | ⏳ Pending |
-| M06 iontrap_emu | ⏳ Pending |
-| M07 Capstone | ⏳ Pending |
-| M08 Infrastructure | ⏳ Pending |
-| M09 UVM + VHDL | ⏳ Pending |
+| M01 SV + SVA | ✅ Complete (2026-06-24) |
+| M02 cocotb | ✅ Complete (2026-06-24) |
+| M03 RFSoC RTL | ✅ Complete (2026-06-24) |
+| M04 ARTIQ kernels | ✅ Complete (2026-06-25) |
+| M05 Migen/Amaranth | ✅ Complete (2026-06-25) |
+| M06 iontrap_emu | ✅ Complete (2026-06-25) |
+| M07 Capstone | ✅ Complete (2026-06-29) |
+| M08 Infrastructure | ✅ Complete (2026-07-01) |
+| M09 UVM + VHDL | ✅ Complete (2026-07-01) |
 
 ---
 

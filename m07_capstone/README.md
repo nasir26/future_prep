@@ -17,7 +17,7 @@ ion-trap physics backend → two-node distributed entanglement.
 | asyncio | stdlib | Experiment scheduler |
 | scipy | 1.x | Calibration curve fitting |
 | openqasm3 | 1.0.1 | AST types (parser uses regex subset) |
-| pytest | 9.x | 32-test suite |
+| pytest | 9.x | 34-test suite |
 
 ---
 
@@ -61,8 +61,8 @@ m07_capstone/
 │   ├── test_backend.py      (6 tests)
 │   ├── test_compiler.py     (7 tests)
 │   ├── test_scheduler.py    (6 tests)
-│   ├── test_calibration.py  (7 tests)
-│   └── test_distributed.py  (6 tests)
+│   ├── test_calibration.py  (8 tests)
+│   └── test_distributed.py  (7 tests)
 ├── run_qasm3.py         ← CLI: python run_qasm3.py <circuit.qasm>
 ├── Makefile
 └── README.md
@@ -128,7 +128,7 @@ photonic quantum network links.
 source ~/future_prep/scripts/activate_qprep.sh
 cd m07_capstone
 
-# Run all 32 tests
+# Run all 34 tests
 make test
 
 # Demo: run Bell circuit end-to-end

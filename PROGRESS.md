@@ -7,13 +7,13 @@ Updated: 2026-07-01 (M09) — all 10 modules complete
 | Module | Status | Completed | Notes |
 |--------|--------|-----------|-------|
 | M00 Toolchain bootstrap | ✅ Complete | 2026-06-10 | All 3 sims passing; VCDs in waves/ |
-| M01 SV + SVA | ✅ Complete | 2026-06-24 | ex01–ex07 all PASS; DoC confirmed |
+| M01 SV + SVA | ✅ Complete | 2026-06-24 | ex01–ex07 + axi_stream + axi_lite all PASS (314 total); DoC confirmed |
 | M02 cocotb | ✅ Complete | 2026-06-24 | 13/13 PASS: ex01(5) ex02(5) ex03(3) |
 | M03 RFSoC RTL | ✅ Complete | 2026-06-24 | 18/18 PASS: ex01(5) DDS, ex02(4) envelope, ex03(5) sequencer, ex04(4) Rabi |
 | M04 ARTIQ kernels | ✅ Complete | 2026-06-25 | 45 PASS 1 SKIP: ex01(6) TTL, ex02(4) photon, ex03(6) DDS, ex04(5) cooling, ex05(4) Rabi, ex06(5) Ramsey/DMA, ex07(4) SBC, ex08(4) MS, ex09(8) MCM+herald |
 | M05 Migen/Amaranth | ✅ Complete | 2026-06-25 | 32/32 PASS: Migen(13) Counter/FSM/FIFO, Amaranth(19) Counter/FSM/FIFO/DDS + Verilog export |
 | M06 iontrap_emu | ✅ Complete | 2026-06-25 | 61/61 PASS: single-ion(10) cooling(8) readout(13) noise(16) ms_gate(7) server(7) |
-| M07 Capstone | ✅ Complete | 2026-06-29 | 34/34 PASS: backend(6) compiler(7) scheduler(6) calibration(7) distributed(8) |
+| M07 Capstone | ✅ Complete | 2026-06-29 | 34/34 PASS: backend(6) compiler(7) scheduler(6) calibration(8) distributed(7) |
 | M08 Infrastructure | ✅ Complete | 2026-07-01 | Docker image + compose demo + GH Actions CI (`act`-verified green) + pre-commit |
 | M09 UVM + VHDL | ✅ Complete | 2026-07-01 | UVM env (8+160 beats matched, 0 mismatches) + VHDL UART mixed-language (12/12 PASS) |
 
@@ -101,8 +101,26 @@ Key lessons:
 - [x] ex05: Interface + modport — producer/consumer handshake (xsim, 3 PASS)
 - [x] ex06: Package — fifo_pkg types + function (xsim, 9 PASS)
 - [x] ex07: Parameterized sync FIFO — circular buffer, dual-pointer (xsim, 19 PASS)
-- [x] Day 3: AXI4-Stream FIFO + SVA assertions
-- [x] Day 4: AXI4-Lite regfile + gate_fifo port
+- [x] Day 3: AXI4-Stream FIFO + SVA assertions (218 PASS incl. 200-beat random stream)
+- [x] Day 4: AXI4-Lite regfile + gate_fifo_sv + SVA (19 PASS) — see m01_sv_sva/README.md
+      for why `gate_fifo_sv.sv` is an original implementation, not a literal port
+      (no `~/fpga_rtl/gate_fifo.v` source exists on this machine)
+
+Day 4 key lessons:
+- The AXI-Stream STIMULUS property (once TVALID asserts, it must hold until
+  TREADY is seen) applies to test *stimulus*, not just the DUT — a first
+  version of `tb_axi_lite_regfile.sv`'s gate test asserted `s_tvalid` to
+  probe that the gated FIFO refuses it, then unconditionally cleared it,
+  which is itself an illegal retracted offer. Fix: hold the offer and let
+  the *next* test pick it up once the gate opens, rather than drop-and-reoffer.
+- Corollary: once that held offer's `tready` goes high mid-way through a
+  concurrent AXI-Lite write's own response handshake, it must be cleared by
+  a process racing that write (`fork ... join`), not sequentially after —
+  otherwise the DUT (correctly) accepts several more beats of the same
+  now-unwanted held data before the test notices.
+- AXI4-Lite's AW/W channels are independent — a legal master may assert
+  either one first — so `axi_lite_regfile.sv`'s write FSM needs
+  `W_WAIT_DATA`/`W_WAIT_ADDR` states to latch whichever arrives first.
 
 ## M04 Checklist (ARTIQ kernels — artiq_sim + pytest)
 
@@ -170,7 +188,7 @@ needed in test code to read registered outputs (fill_level, count) after an edge
 - [x] Smoke test: counter.v simulates in **xsim** → VCD `waves/counter_xsim.vcd`
 - [x] Smoke test: counter.v simulates in **Verilator** → VCD `waves/counter_verilator.vcd`
 - [x] Waveform viewing: VS Code Surfer extension documented in m00_toolchain/README.md
-- [x] `make smoke` in m00_toolchain/ exits 0 — 7 PASS × 3 simulators
+- [x] `make smoke` in m00_toolchain/ exits 0 — 9 PASS-ish lines (8 tests + 1 summary) × 3 simulators = 27 total
 
 ## M00 Definition of Command
 
@@ -178,7 +196,7 @@ Pass ALL of the following **without references**:
 1. Type `source ~/future_prep/scripts/setup_vivado.sh` and show `xsim --version` output
 2. Type `conda activate qprep` and show `python -c "import qutip, cocotb, amaranth; print('ok')"`
 3. Explain the difference between iverilog and xsim for cocotb (why cocotb prefers iverilog)
-4. Open `waves/counter_smoke.vcd` in VS Code Surfer without any extra commands
+4. Open `waves/counter_icarus.vcd` in VS Code Surfer without any extra commands
 5. Explain GTKWave X-forwarding fallback (`ssh -X`)
 
 ## Lessons Learned

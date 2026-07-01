@@ -13,7 +13,7 @@
 //  2. enable=1 causes count to increment each cycle
 //  3. enable=0 holds count
 //  4. wrap signal fires exactly one cycle when count rolls over from 255→0
-//  5. count reaches 256 and wraps back to 0 cleanly
+//  5. count reaches 255 (8-bit max) and wraps back to 0 cleanly
 
 `timescale 1ns/1ps
 

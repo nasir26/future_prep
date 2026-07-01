@@ -70,6 +70,9 @@ module tb_counter_xsim;
         if (count !== 8'h00) begin $display("FAIL T5b got 0x%02X", count); errors = errors + 1; end
         else $display("PASS T5b: rolled to 0");
 
+        if (wrap !== 1'b0) begin $display("FAIL T5c wrap=%0b", wrap); errors = errors + 1; end
+        else $display("PASS T5c: wrap deasserts after rollover");
+
         en = 0;
         repeat(5) @(posedge clk); #1;
         if (count !== 8'h00) begin $display("FAIL T6 got %0d", count); errors = errors + 1; end

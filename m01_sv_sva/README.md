@@ -1,6 +1,6 @@
 # Module 01 — SystemVerilog + SVA
 
-**Status:** 🔄 Active (Days 2–4, 11–13 Jun 2026)  
+**Status:** ✅ Complete (Days 2–4, 11–13 Jun 2026)  
 **Goal:** Write idiomatic SystemVerilog from scratch — types, FSMs, interfaces, packages, parameterized modules — then layer on SVA assertions for protocol correctness.
 
 ---
@@ -45,13 +45,21 @@
 | `rtl/sva_fifo_props.sv` | SVA properties: no data loss, no overflow, handshake rules |
 | `tb/tb_axi_stream_fifo.sv` | Directed + random testbench |
 
-## Day 4 files (AXI4-Lite regfile)
+## Day 4 files (AXI4-Lite regfile + gated FIFO)
 
 | File | Concept |
 |------|---------|
-| `rtl/axi_lite_regfile.sv` | AXI4-Lite slave — 4 read/write registers |
-| `rtl/gate_fifo_sv.sv` | gate_fifo.v ported to idiomatic SV + SVA |
-| `tb/tb_axi_lite_regfile.sv` | Register read/write testbench |
+| `rtl/axi_lite_regfile.sv` | AXI4-Lite slave — 4 read/write registers, inline SVA for the 5-channel handshake |
+| `rtl/gate_fifo_sv.sv` | Datapath FIFO gated by a control register — see note below |
+| `rtl/sva_gate_fifo_props.sv` | SVA properties (Day 3's `bind` pattern): occupancy, handshake, plus the gate itself |
+| `tb/tb_axi_lite_regfile.sv` | One integration TB: drives both DUTs together (REG0 bit 0 → `gate_en`) |
+
+**Note on "port gate_fifo.v":** no `~/fpga_rtl/gate_fifo.v` exists on this
+machine to port from (referenced in `SCHEDULE.md` but never checked in
+anywhere in this repo). `gate_fifo_sv.sv` is an original implementation of
+what that name describes — Day 3's `axi_stream_fifo.sv` plus one AND term
+gating writes on a control-plane enable — built and verified fresh rather
+than left as an unactionable "copy this file that doesn't exist" step.
 
 ---
 
@@ -176,15 +184,22 @@ module my_mod
 
 ## Definition of Command — pass before marking M01 complete
 
-1. **[ ]** Without references, write a two-always Moore FSM with 3 states using enum; compile and sim in xsim.
-2. **[ ]** Without references, write an AXI4-Stream FIFO (VALID/READY, parametric depth/width) in SV.
-3. **[ ]** Explain: why use `always_ff` instead of `always @(posedge clk)`?  
+1. **[x]** Without references, write a two-always Moore FSM with 3 states using enum; compile and sim in xsim.
+2. **[x]** Without references, write an AXI4-Stream FIFO (VALID/READY, parametric depth/width) in SV.
+3. **[x]** Explain: why use `always_ff` instead of `always @(posedge clk)`?  
    *(answer: `always_ff` is a semantic tag — compiler rejects non-FF behavior inside it, catching latch/comb bugs at compile time)*
-4. **[ ]** Explain: what does `modport` do and why is it useful?  
+4. **[x]** Explain: what does `modport` do and why is it useful?  
    *(answer: constrains port directions per module role; misconnections become compile errors, not sim mismatches)*
-5. **[ ]** Explain: difference between `packed struct` and `unpacked struct`?  
+5. **[x]** Explain: difference between `packed struct` and `unpacked struct`?  
    *(answer: packed = contiguous bit-vector, can be sliced and used as a port; unpacked = array-of-elements, cannot be packed into a single wire)*
-6. **[ ]** Run `make axi_stream` and explain each SVA property shown in the waveform.
-7. **[ ]** Explain: what is the AXI4-Stream handshake rule that SVA enforces?  
+6. **[x]** Run `make axi_stream` and explain each SVA property shown in the waveform.
+7. **[x]** Explain: what is the AXI4-Stream handshake rule that SVA enforces?  
    *(answer: once VALID is asserted, it must not be deasserted until READY is seen — data must be held stable)*
-8. **[ ]** Write a package with a parameterized FIFO typedef; use it in two separate modules; compile clean.
+8. **[x]** Run `make axi_lite` and explain why the write FSM has separate
+   `W_WAIT_DATA`/`W_WAIT_ADDR` states instead of only accepting AW+W together.  
+   *(answer: AXI4-Lite's write address and write data channels are
+   independent — a legal master may assert AWVALID and WVALID on different
+   cycles, in either order, so the slave must be able to latch whichever
+   arrives first and wait for its partner)*
+9. **[x]** Write a package with a parameterized FIFO typedef; use it in two separate modules; compile clean.
+   *(`rtl/ex06_pkg.sv`'s `fifo_cfg_t`/`fifo_status_t`, imported by `rtl/ex06_top.sv` and `tb/tb_ex06_pkg.sv`)*
