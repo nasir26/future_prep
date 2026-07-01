@@ -1,6 +1,6 @@
 # Progress Tracker
 
-Updated: 2026-07-01 (M08)
+Updated: 2026-07-01 (M09) — all 10 modules complete
 
 ## Module Status
 
@@ -15,7 +15,43 @@ Updated: 2026-07-01 (M08)
 | M06 iontrap_emu | ✅ Complete | 2026-06-25 | 61/61 PASS: single-ion(10) cooling(8) readout(13) noise(16) ms_gate(7) server(7) |
 | M07 Capstone | ✅ Complete | 2026-06-29 | 34/34 PASS: backend(6) compiler(7) scheduler(6) calibration(7) distributed(8) |
 | M08 Infrastructure | ✅ Complete | 2026-07-01 | Docker image + compose demo + GH Actions CI (`act`-verified green) + pre-commit |
-| M09 UVM + VHDL | ⏳ Pending | — | |
+| M09 UVM + VHDL | ✅ Complete | 2026-07-01 | UVM env (8+160 beats matched, 0 mismatches) + VHDL UART mixed-language (12/12 PASS) |
+
+## M09 Checklist (UVM + VHDL)
+
+- [x] axis_if.sv: shared AXI-Stream interface + `mon_cb` clocking block
+- [x] axis_seq_item/sequencer/driver.sv: one item + one driver, mode-configured for both DUT ports
+- [x] axis_monitor/agent.sv: passive observer + agent bundling driver/sequencer/monitor
+- [x] axis_scoreboard/env.sv: order-preserving comparison via two `uvm_analysis_imp_decl` exports
+- [x] axis_sequences/tests.sv: axis_smoke_test (8 beats) + axis_random_test (160 beats, randomized backpressure)
+- [x] tb_top.sv: DUT compiled straight from `m01_sv_sva/rtl/axi_stream_fifo.sv` (no copy)
+- [x] uart_tx.vhd / uart_rx.vhd: minimal 8-N-1 UART pair
+- [x] tb_uart_mixed.sv: SV testbench, VHDL DUT, loopback, 12/12 PASS
+- [x] README.md with 8-item DoC
+
+Key lessons:
+- xsim's design-wide timescale check needs `xelab --timescale 1ns/1ps` when
+  linking `-L uvm` — Xilinx's precompiled UVM library modules carry no
+  timescale of their own, and mixing explicit-timescale user files with it
+  otherwise throws `XSIM 43-4100`.
+- The monitor's first version (`@(posedge vif.clk); if (tvalid && tready)`)
+  raced the driver's blocking assignment in the same delta cycle — 0/8
+  producer-side beats detected. Fixed with a clocking block (`#1step`
+  input skew samples in the Preponed region, before this edge's Active
+  region runs) — the textbook reason UVM environments use clocking blocks
+  instead of raw signal access.
+- A fixed post-sequence drain delay (`#200ns`) is a guess at worst-case
+  randomized backpressure and will eventually under-run; waiting on the
+  scoreboard's own "anything still outstanding?" state
+  (`env.sb.expected_q.size() == 0`), guarded by a `fork...join_any`
+  timeout as a hang safety net, is correct regardless of the random seed.
+- UVM seeds sequence-item randomization from the object's name
+  (`get_full_name()`), not from `-sv_seed` — identical "random" output
+  across different seeds is expected UVM behavior when child sequences are
+  named deterministically (`pkt_0`, `pkt_1`, ...).
+- Mixed-language xsim needs no wrapper: `xvhdl` and `xvlog` each compile
+  their own language into the same `work` library, and `xelab` links
+  across the boundary as if everything were one language.
 
 ## M08 Checklist (Infrastructure — Docker, CI, pre-commit)
 

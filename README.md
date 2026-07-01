@@ -33,7 +33,7 @@ Source Vivado for any session: `source ~/future_prep/scripts/setup_vivado.sh`
 - [x] **M06** Ion-trap physics emulator (QuTiP) — `iontrap_emu/` asyncio server
 - [x] **M07** CAPSTONE — QASM3 → compiler → sequencer → physics → fitted results
 - [x] **M08** Infrastructure — Docker, GitHub Actions CI, pre-commit, green from fresh clone
-- [ ] **M09** UVM + VHDL literacy — toy UVM TB, mixed-language xsim
+- [x] **M09** UVM + VHDL literacy — toy UVM TB, mixed-language xsim
 
 ## Quick-start
 
