@@ -1,6 +1,6 @@
 # Module 02 — cocotb
 
-**Status:** 🔄 Active (Day 5–6)  
+**Status:** ✅ Complete (Days 5–6, 14 & 17 Jun 2026)  
 **Goal:** Write Python testbenches for RTL using cocotb — from a hello-world coroutine to a full constrained-random testbench with a functional coverage model.
 
 ---
